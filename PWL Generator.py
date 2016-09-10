@@ -50,11 +50,11 @@ Licence:
 TARGET_FILE=r'd:\temp\pwl.txt'
 
 # The user needs to modify this to create an array of  voltages
-LST_VOLTAGE=[4e3,0,-4e3,0]*5
-
+LST_VOLTAGE=[4e3,0]*5
+print LST_VOLTAGE
 # This is used to fine tune the timing of the square wave
-STR_BIG_TIME='500m'
-STR_SMALL_TIME='.01m'
+FLT_BIG_TIME=.1
+FLT_SMALL_TIME=.2
 
 
 # uncomment the True to display the File Contents
@@ -77,9 +77,17 @@ starttime=time.time()
 
 tmp='0 0\n' # create temporary storage of string so that we can display the contents later
 
+currTime = 0
+ctr = 0
 for x in LST_VOLTAGE:
-    tmp+='+%s \t %f\n' % (STR_SMALL_TIME,x)
-    tmp+='+%s \t %f\n' % (STR_BIG_TIME,x)
+    tmp+='%.10f \t %f\n' % (currTime+.0000000001,x)
+
+    if(ctr%2):
+        currTime+=FLT_BIG_TIME
+    else:
+        currTime+=FLT_SMALL_TIME
+    tmp+='%.10f \t %f\n' % (currTime,x)
+    ctr += 1
 
 with open(TARGET_FILE,'w') as f:
     f.write(tmp)
